@@ -19,18 +19,30 @@ func NewUserController() *UserController {
 	}
 }
 
-// TODO: using postgresql
-// TODO: change created_at and updated_at response
 // TODO: testing
 func (r *UserController) Index(ctx http.Context) http.Response {
+	page := ctx.Request().QueryInt("page", 1)
+	page_size := ctx.Request().QueryInt("page_size", 10)
 	var users []models.User
-	facades.Orm().Query().Find(&users)
+	var total int64
+
+	facades.Orm().Query().Paginate(page, page_size, &users, &total)
+
+	var last_page int64
+	if total%int64(page_size) == 0 {
+		last_page = total / int64(page_size)
+	} else {
+		last_page = total/int64(page_size) + 1
+	}
 
 	return ctx.Response().Success().Json(http.Json{
 		"message": "Users found successfully.",
 		"data":    users,
 		"meta": http.Json{
-			"total": len(users),
+			"total":        total,
+			"per_page":     page_size,
+			"current_page": page,
+			"last_page":    last_page,
 		},
 	})
 }
@@ -108,7 +120,7 @@ func (r *UserController) Store(ctx http.Context) http.Response {
 	err := validator.Bind(&user)
 	if err != nil {
 		return ctx.Response().Json(http.StatusInternalServerError, http.Json{
-			"message": "User create failed.",
+			"message": "User create failed when bind data.",
 			"data":    nil,
 			"err":     err,
 		})

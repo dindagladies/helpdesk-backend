@@ -1,7 +1,10 @@
 package models
 
 import (
+	"goravel/database/factories"
 	"time"
+
+	"github.com/goravel/framework/contracts/database/factory"
 )
 
 type User struct {
@@ -14,13 +17,16 @@ type User struct {
 	Is_Active bool      `form:"is_active" json:"is_active"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
-	// orm.SoftDeletes
 }
 
 func (r *User) TableName() string {
 	return "users"
 }
 
-// func (r *User) Connection() string {
-// 	return "postgresql"
-// }
+func (r *User) Connection() string {
+	return "postgresql"
+}
+
+func (u *User) Factory() factory.Factory {
+	return &factories.UserFactory{}
+}

@@ -26,5 +26,5 @@ func (s *ExampleTestSuite) TearDownTest() {
 }
 
 func (s *ExampleTestSuite) TestIndex() {
-	s.True(true)
+	s.True(false)
 }
