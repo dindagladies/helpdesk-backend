@@ -13,8 +13,8 @@ func SetupRoutes(app *fiber.App) {
 
 	// routes
 	v1.Get("/", handler.GetAllUsers)
-	v1.Get("/", handler.GetUser)
+	v1.Get("/:id", handler.GetUser)
 	v1.Post("/", handler.CreateUser)
-	// v1.Put("/", handler.UpdateUser)
-	// v1.Delete("/", handler.DeleteUserByID)
+	v1.Put("/:id", handler.UpdateUser)
+	v1.Delete("/:id", handler.DeleteUserByID)
 }
