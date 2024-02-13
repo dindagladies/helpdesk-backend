@@ -7,6 +7,8 @@ import (
 	"github.com/joho/godotenv"
 )
 
+const Secret = "secret"
+
 // get env value from key
 func Config(key string) string {
 	err := godotenv.Load(".env")

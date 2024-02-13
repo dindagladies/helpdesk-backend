@@ -4,7 +4,6 @@ import (
 	"heldesk-api/database"
 	"heldesk-api/model"
 
-	// "github.com/gofiber/fiber"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
@@ -17,9 +16,9 @@ func GetAllUsers(c *fiber.Ctx) error {
 	db.Find(&users)
 
 	if len(users) == 0 {
-		return c.Status(404).JSON(fiber.Map{
-			"status":  "error",
-			"message": "Users not found",
+		return c.Status(200).JSON(fiber.Map{
+			"status":  "success",
+			"message": "Users is empty.",
 			"data":    nil,
 		})
 	}
@@ -28,6 +27,12 @@ func GetAllUsers(c *fiber.Ctx) error {
 		"status":  "success",
 		"message": "Users found successfully.",
 		"data":    users,
+		"meta": fiber.Map{
+			"current_page": 0,
+			"last_page":    0,
+			"per_page":     0,
+			"total":        len(users),
+		},
 	})
 
 }
@@ -48,6 +53,7 @@ func GetUser(c *fiber.Ctx) error {
 		})
 	}
 
+	// TODO: remove password from response (by hide user gorm)
 	return c.Status(200).JSON(fiber.Map{
 		"status":  "success",
 		"message": "User found successfully.",
@@ -81,14 +87,17 @@ func CreateUser(c *fiber.Ctx) error {
 
 	return c.Status(201).JSON(fiber.Map{
 		"status":  "success",
-		"message": "User has created",
+		"message": "User created successfully.",
 		"data":    user,
 	})
 }
 
 func UpdateUser(c *fiber.Ctx) error {
 	type updateUser struct {
-		Username string `json:"username"`
+		Full_Name string `json:"full_name"`
+		Role      string `json:"role"`
+		Is_Active bool   `json:"is_active"`
+		Password  string `json:"password"`
 	}
 
 	db := database.DB.Db
@@ -115,7 +124,10 @@ func UpdateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	user.Username = updateUserData.Username
+	user.Full_Name = updateUserData.Full_Name
+	user.Role = updateUserData.Role
+	user.Is_Active = updateUserData.Is_Active
+	user.HashPassword(updateUserData.Password)
 
 	db.Save(&user)
 

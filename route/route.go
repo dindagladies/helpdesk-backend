@@ -1,7 +1,9 @@
 package route
 
 import (
+	"heldesk-api/config"
 	"heldesk-api/handler"
+	"heldesk-api/middleware"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -17,4 +19,13 @@ func SetupRoutes(app *fiber.App) {
 	v1.Post("/", handler.CreateUser)
 	v1.Put("/:id", handler.UpdateUser)
 	v1.Delete("/:id", handler.DeleteUserByID)
+
+	/*
+	* Auth routes
+	 */
+
+	//create a new JWT middleware
+	jwt := middleware.NewAuthMiddleware(config.Secret)
+	api.Post("/login", handler.Login)
+	api.Get("/protected", jwt, handler.Protected)
 }
