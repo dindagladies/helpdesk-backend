@@ -47,13 +47,12 @@ func GetUser(c *fiber.Ctx) error {
 
 	if user.ID == uuid.Nil {
 		return c.Status(404).JSON(fiber.Map{
-			"status":  "error",
+			// "status":  "error",
 			"message": "User not found",
 			"data":    nil,
 		})
 	}
 
-	// TODO: remove password from response (by hide user gorm)
 	return c.Status(200).JSON(fiber.Map{
 		"status":  "success",
 		"message": "User found successfully.",
@@ -75,6 +74,8 @@ func CreateUser(c *fiber.Ctx) error {
 			"data":    err,
 		})
 	}
+
+	// hash password
 
 	err = db.Create(&user).Error
 	if err != nil {

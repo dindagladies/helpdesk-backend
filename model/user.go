@@ -10,10 +10,12 @@ import (
 
 type User struct {
 	// gorm.Model
-	ID        uuid.UUID      `gorm:"type:uuid;"`
-	Full_Name string         `json:"full_name"`
-	Email     string         `json:"email"`
-	Password  string         `json:"password"`
+	ID        uuid.UUID `gorm:"type:uuid;"`
+	Full_Name string    `json:"full_name"`
+	Email     string    `json:"email"`
+	// hide password when return json
+	// Password string `json:"password,omitempty"`
+	Password  string         `json:"password" gorm:"->:false;<-:create"`
 	Role      string         `json:"role"`
 	Is_Active bool           `json:"is_active"`
 	CreatedAt time.Time      `json:"created_at"`
