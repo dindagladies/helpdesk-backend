@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"helpdesk/api/structs"
+	"helpdesk/api/util"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -13,16 +14,19 @@ func (idb *InDB) Index(c *gin.Context) {
 		result gin.H
 	)
 
-	idb.DB.Find(&users)
+	idb.DB.Scopes(util.Paginate(c.Request)).Find(&users)
+	// idb.DB.Find(&users)
 	if len(users) <= 0 {
 		result = gin.H{
-			"result": nil,
-			"count":  0,
+			"message": "success",
+			"data":    []string{},
+			"meta":    "",
 		}
 	} else {
 		result = gin.H{
-			"result": users,
-			"count":  0,
+			"message": "success",
+			"data":    users,
+			"meta":    "",
 		}
 	}
 
@@ -36,18 +40,16 @@ func (idb *InDB) Show(c *gin.Context) {
 	)
 
 	id := c.Param("id")
-	print(id)
 	err := idb.DB.Where("id = ?", id).First(&user).Error
 
 	if err != nil {
 		result = gin.H{
-			"result": err.Error(),
-			"count":  0,
+			"message": err.Error(),
 		}
 	} else {
 		result = gin.H{
-			"result": user,
-			"count":  1,
+			"message": "success retrieved user",
+			"data":    user,
 		}
 	}
 

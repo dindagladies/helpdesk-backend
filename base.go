@@ -18,5 +18,8 @@ func main() {
 	router.POST("/user", inDB.Store)
 	router.PUT("/user/:id", inDB.Update)
 	router.DELETE("/user/:id", inDB.Delete)
-	router.Run(":3000")
+	router.Run("localhost:3000")
+
+	// run :
+	// nodemon --watch './**/*.go' --signal SIGKILL --exec go run base.go
 }
