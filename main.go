@@ -1,7 +1,7 @@
 package main
 
 import (
-	"user-api/cmd/handler"
+	"user-api/cmd/handlers"
 	"user-api/cmd/storage"
 
 	"github.com/labstack/echo/v4"
@@ -10,8 +10,10 @@ import (
 func main() {
 	e := echo.New()
 
-	e.GET("/", handler.Home)
-
+	e.GET("/", handlers.Home)
 	storage.InitDB()
+
+	e.POST("/users", handlers.CreateUser)
+
 	e.Logger.Fatal(e.Start(":3000"))
 }

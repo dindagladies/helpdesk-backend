@@ -42,3 +42,7 @@ func InitDB() {
 
 	fmt.Println("Successfully connected to database!")
 }
+
+func GetDB() *sql.DB {
+	return db
+}
